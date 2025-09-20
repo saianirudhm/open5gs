@@ -244,7 +244,7 @@ static SSL_CTX *create_ssl_ctx(
     SSL_CTX_set_options(ssl_ctx, ssl_opts);
 
 #if OPENSSL_VERSION_NUMBER >= 0x30000000L
-    if (SSL_CTX_set1_groups_list(ssl_ctx, "MLKEM512") != 1) {
+    if (SSL_CTX_set1_curves_list(ssl_ctx, "MLKEM512") != 1) {
         ogs_error("SSL_CTX_set1_curves_list failed: %s", ERR_error_string(ERR_get_error(), NULL));
         return NULL;
     }
