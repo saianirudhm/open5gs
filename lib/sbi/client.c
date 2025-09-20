@@ -21,10 +21,6 @@
 
 #include "curl/curl.h"
 
-#ifndef KEM
-#define KEM "P-256"
-#endif
-
 typedef struct sockinfo_s {
     ogs_poll_t *poll;
     curl_socket_t sockfd;
@@ -392,8 +388,8 @@ static CURLcode sslctx_callback(CURL *curl, void *sslctx, void *userdata)
     ogs_assert(ctx);
     ogs_assert(userdata);
 
-    SSL_CTX_set1_groups_list(ctx, KEM);
-    ogs_info("Key exchange with: %s", KEM);
+    SSL_CTX_set1_groups_list(ctx, "MLKEM512");
+    ogs_info("Key exchange with: MLKEM512");
 
     return CURLE_OK;
 }
