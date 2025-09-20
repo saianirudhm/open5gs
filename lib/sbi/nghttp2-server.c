@@ -25,6 +25,10 @@
 
 #define USE_SEND_DATA_WITH_NO_COPY 1
 
+#ifndef KEM
+#define KEM "P-256"
+#endif
+
 static void server_init(int num_of_session_pool, int num_of_stream_pool);
 static void server_final(void);
 
@@ -244,7 +248,7 @@ static SSL_CTX *create_ssl_ctx(
     SSL_CTX_set_options(ssl_ctx, ssl_opts);
 
 #if OPENSSL_VERSION_NUMBER >= 0x30000000L
-    if (SSL_CTX_set1_curves_list(ssl_ctx, "P-256") != 1) {
+    if (SSL_CTX_set1_curves_list(ssl_ctx, KEM) != 1) {
         ogs_error("SSL_CTX_set1_curves_list failed: %s", ERR_error_string(ERR_get_error(), NULL));
         return NULL;
     }

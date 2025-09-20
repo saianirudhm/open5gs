@@ -21,6 +21,10 @@
 
 #include "curl/curl.h"
 
+#ifndef KEM
+#define KEM "P-256"
+#endif
+
 typedef struct sockinfo_s {
     ogs_poll_t *poll;
     curl_socket_t sockfd;
@@ -388,13 +392,8 @@ static CURLcode sslctx_callback(CURL *curl, void *sslctx, void *userdata)
     ogs_assert(ctx);
     ogs_assert(userdata);
 
-    /* Ensure app data is set for SSL objects */
-    SSL_CTX_set_app_data(ctx, client->sslkeylog);
-
-#if OPENSSL_VERSION_NUMBER >= 0x10101000L
-    /* Set the SSL Key Log callback */
-    SSL_CTX_set_keylog_callback(ctx, ogs_sbi_keylog_callback);
-#endif
+    SSL_CTX_set1_groups_list(ctx, KEM);
+    ogs_info("Key exchange with: %s", KEM);
 
     return CURLE_OK;
 }
@@ -505,7 +504,7 @@ static connection_t *connection_add(
             curl_easy_setopt(conn->easy, CURLOPT_SSLCERT, client->cert);
         }
 
-        if (client->sslkeylog) {
+        if (1) {
             /* Set SSL_CTX callback */
             curl_easy_setopt(conn->easy, CURLOPT_SSL_CTX_FUNCTION,
                     sslctx_callback);
