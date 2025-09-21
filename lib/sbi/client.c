@@ -388,8 +388,8 @@ static CURLcode sslctx_callback(CURL *curl, void *sslctx, void *userdata)
     ogs_assert(ctx);
     ogs_assert(userdata);
 
-    SSL_CTX_set1_groups_list(ctx, "MLKEM512");
-    ogs_info("Key exchange with: MLKEM512");
+    SSL_CTX_set1_groups_list(ctx, "MLKEM1024");
+    ogs_info("Key exchange with: MLKEM1024");
 
     return CURLE_OK;
 }
