@@ -388,8 +388,16 @@ static CURLcode sslctx_callback(CURL *curl, void *sslctx, void *userdata)
     ogs_assert(ctx);
     ogs_assert(userdata);
 
-    SSL_CTX_set1_groups_list(ctx, "P-256");
-    ogs_info("Key exchange with: P-256 ECDH");
+    SSL_CTX_set1_groups_list(ctx, "MLKEM512");
+    ogs_info("Key exchange with: MLKEM512");
+
+    /* Ensure app data is set for SSL objects */
+    SSL_CTX_set_app_data(ctx, client->sslkeylog);
+
+#if OPENSSL_VERSION_NUMBER >= 0x10101000L
+    /* Set the SSL Key Log callback */
+    SSL_CTX_set_keylog_callback(ctx, ogs_sbi_keylog_callback);
+#endif
 
     return CURLE_OK;
 }
@@ -500,7 +508,7 @@ static connection_t *connection_add(
             curl_easy_setopt(conn->easy, CURLOPT_SSLCERT, client->cert);
         }
 
-        if (1) {
+        if (client->sslkeylog) {
             /* Set SSL_CTX callback */
             curl_easy_setopt(conn->easy, CURLOPT_SSL_CTX_FUNCTION,
                     sslctx_callback);
