@@ -388,9 +388,6 @@ static CURLcode sslctx_callback(CURL *curl, void *sslctx, void *userdata)
     ogs_assert(ctx);
     ogs_assert(userdata);
 
-    SSL_CTX_set1_groups_list(ctx, "MLKEM512");
-    ogs_info("Key exchange with: MLKEM512");
-
     /* Ensure app data is set for SSL objects */
     SSL_CTX_set_app_data(ctx, client->sslkeylog);
 
@@ -507,6 +504,10 @@ static connection_t *connection_add(
             curl_easy_setopt(conn->easy, CURLOPT_SSLKEY, client->private_key);
             curl_easy_setopt(conn->easy, CURLOPT_SSLCERT, client->cert);
         }
+
+        /* Set key exchange algorithm */
+        curl_easy_setopt(conn->easy, CURLOPT_SSL_EC_CURVES, "MLKEM512");
+        ogs_info("Using key exchange algorithm: MLKEM512");
 
         if (client->sslkeylog) {
             /* Set SSL_CTX callback */
