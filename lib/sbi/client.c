@@ -507,7 +507,6 @@ static connection_t *connection_add(
 
         /* Set key exchange algorithm */
         curl_easy_setopt(conn->easy, CURLOPT_SSL_EC_CURVES, "MLKEM512");
-        ogs_info("Using key exchange algorithm: MLKEM512");
 
         if (client->sslkeylog) {
             /* Set SSL_CTX callback */
